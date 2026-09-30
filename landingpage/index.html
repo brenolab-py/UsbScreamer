@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UsbScreamer — Conecte o USB. Ele vai gritar de volta.</title>
+  <meta name="description" content="Um utilitário cômico e ultraleve para Windows. Reage à conexão e desconexão de pendrives com áudios imediatos e personalizáveis." />
+  <link rel="icon" href="app.ico" />
+
+  <!-- Pré-visualização ao compartilhar (Reddit, WhatsApp, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="UsbScreamer — Conecte o USB. Ele vai gritar de volta." />
+  <meta property="og:description" content="Um utilitário cômico e ultraleve para Windows que toca áudios ao conectar e desconectar pendrives." />
+  <meta property="og:image" content="https://usb-screamer.vercel.app/images/mascote.jpg" />
+  <meta property="og:url" content="https://usb-screamer.vercel.app" />
+  <meta name="twitter:card" content="summary" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fontes JetBrains Mono & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            background: '#09090b',
+            foreground: '#f4f4f5',
+            card: '#121215',
+            border: '#27272a',
+            muted: '#18181b',
+            'muted-foreground': '#a1a1aa',
+            primary: '#fafafa',
+            'primary-foreground': '#09090b',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .accent-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+    }
+    .crisp-icon {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  </style>
+</head>
+<body class="bg-background text-foreground font-sans antialiased min-h-screen selection:bg-foreground selection:text-background">
+
+  <!-- Efeito de iluminação superior -->
+  <div class="fixed inset-0 pointer-events-none accent-glow z-0"></div>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    
+    <!-- Navbar Minimalista -->
+    <nav class="flex items-center justify-between px-6 py-5 max-w-3xl mx-auto w-full border-b border-border/40">
+      <div class="flex items-center gap-2 font-mono text-sm tracking-tight font-semibold">
+        <i data-lucide="usb" class="w-4 h-4 text-primary"></i>
+        <span>UsbScreamer</span>
+      </div>
+      <div class="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+        <a href="#features" class="hover:text-foreground transition-colors">Recursos</a>
+        <a href="#instalar" class="hover:text-foreground transition-colors">Instalar</a>
+        <a href="#faq" class="hover:text-foreground transition-colors">FAQ</a>
+        <a href="https://pay.kiwify.com.br/PhdYMki" class="rounded-full bg-muted border border-border px-3.5 py-1 text-foreground hover:border-muted-foreground transition-all">Baixar (R$ 9,99)</a>
+      </div>
+    </nav>
+
+    <main class="flex-1 max-w-2xl mx-auto w-full px-6 pt-16 pb-24 space-y-12">
+      
+      <!-- Hero Section -->
+      <section class="flex flex-col items-center text-center space-y-5">
+        <img src="images/mascote-logo.webp" alt="UsbScreamer: mascote pendrive assustado" width="512" height="512" fetchpriority="high" class="w-32 h-32 sm:w-40 sm:h-40 object-contain select-none drop-shadow-xl" draggable="false" />
+
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+          Conecte o USB.<br />Ele vai gritar de volta.
+        </h1>
+
+        <p class="max-w-md text-base leading-relaxed text-muted-foreground">
+          Chega daquele som padrão e sem graça do Windows. Um utilitário nativo, silencioso na bandeja do sistema, personalizável e imprevisível ao plugar.
+        </p>
+
+        <!-- Bloco de Preço com Ancoragem Promocional -->
+        <div class="pt-2 flex flex-col items-center gap-4 w-full">
+          <div class="flex flex-col items-center justify-center gap-1.5">
+            <div class="flex items-center gap-2">
+              <span class="text-xs line-through text-muted-foreground/60 font-mono">De R$ 19,90</span>
+              <span class="text-[10px] uppercase tracking-wider font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                50% OFF • Lançamento
+              </span>
+            </div>
+            
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold font-mono text-muted-foreground">R$</span>
+              <span class="text-4xl sm:text-5xl font-black font-mono tracking-tight text-foreground">9,99</span>
+              <span class="text-xs text-muted-foreground font-mono ml-1">pagamento único</span>
+            </div>
+          </div>
+
+          <!-- Botão CTA Principal -->
+          <a id="comprar" href="https://pay.kiwify.com.br/PhdYMki" class="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground font-medium text-sm px-8 h-12 rounded-full hover:bg-neutral-200 transition-all active:scale-[0.98] shadow-lg shadow-white/5">
+            <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+            <span>Garantir Acesso por R$ 9,99</span>
+          </a>
+
+          <span class="font-mono text-[11px] text-muted-foreground">Licença vitalícia · Windows 10 & 11 (64-bit)</span>
+          <a href="#reembolso" class="inline-flex items-center gap-1.5 font-mono text-[11px] text-emerald-400 hover:underline underline-offset-4">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            Garantia de 7 dias · reembolso sem burocracia
+          </a>
+        </div>
+      </section>
+
+      <!-- Mascote -->
+      <section class="flex flex-col items-center">
+        <figure class="space-y-2 w-full max-w-sm">
+          <img src="images/mascote.webp" alt="Ilustração em quadrinhos do mascote do UsbScreamer, um pendrive azul assustado ao lado de um homem em um escritório retrô, com o computador soltando ondas sonoras" width="800" height="800" loading="lazy" class="w-full h-auto rounded-2xl border border-border shadow-sm select-none" draggable="false" />
+          <figcaption class="text-[11px] text-muted-foreground text-center">UsbScreamer.</figcaption>
+        </figure>
+      </section>
+
+      <!-- Player de Demonstração Interativo -->
+      <section class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-border/60 pb-3">
+          <h2 class="flex items-center gap-2 text-base font-semibold text-foreground">
+            <i data-lucide="volume-2" class="w-4 h-4 text-muted-foreground"></i>
+            Teste o Áudio Agora
+          </h2>
+          <span class="font-mono text-[10px] uppercase text-muted-foreground bg-muted px-2 py-0.5 rounded border border-border">Amostra Oficial</span>
+        </div>
+
+        <p class="text-xs text-muted-foreground leading-relaxed">
+          Clique nos botões abaixo para simular os efeitos ao plugar ou ejetar seu dispositivo.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <button id="btnPlug" onclick="playSound('sounds/plug.wav')" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-border bg-muted/40 hover:bg-muted hover:border-muted-foreground/40 transition-all font-mono text-xs cursor-pointer">
+            <i data-lucide="play" class="w-3.5 h-3.5 text-primary"></i>
+            <span>Ouvir Plug (Conexão)</span>
+          </button>
+
+          <button id="btnUnplug" onclick="playSound('sounds/unplug.wav')" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-border bg-muted/40 hover:bg-muted hover:border-muted-foreground/40 transition-all font-mono text-xs cursor-pointer">
+            <i data-lucide="play" class="w-3.5 h-3.5 text-primary"></i>
+            <span>Ouvir Unplug (Remoção)</span>
+          </button>
+        </div>
+
+        <audio id="audioPlayer"></audio>
+      </section>
+
+      <!-- Grid de Características Técnicas -->
+      <section id="features" class="space-y-4">
+        <h2 class="text-sm font-mono uppercase tracking-wider text-muted-foreground">O que ele faz</h2>
+        
+        <div class="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <div class="grid gap-5 sm:grid-cols-2 text-left">
+            
+            <div class="flex items-start gap-3">
+              <div class="p-2 rounded-lg bg-muted text-foreground border border-border">
+                <i data-lucide="sliders" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-foreground">Sons 100% Personalizáveis</p>
+                <p class="text-[11px] leading-relaxed text-muted-foreground mt-0.5">Use o botão "Abrir Pasta dos Sons" no menu da bandeja para colocar qualquer meme ou áudio WAV que quiser.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="p-2 rounded-lg bg-muted text-foreground border border-border">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-foreground">Ultraleve (&lt; 15MB RAM)</p>
+                <p class="text-[11px] leading-relaxed text-muted-foreground mt-0.5">Loop assíncrono nativo de baixo impacto. Sem frameworks pesados ou consumo de CPU em background.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="p-2 rounded-lg bg-muted text-foreground border border-border">
+                <i data-lucide="layers" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-foreground">Menu Rápido na Bandeja</p>
+                <p class="text-[11px] leading-relaxed text-muted-foreground mt-0.5">Acesso direto a testes manuais de áudio, inicialização com o Windows e atalho direto para a pasta de arquivos.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="p-2 rounded-lg bg-muted text-foreground border border-border">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-foreground">Sem Permissões UAC</p>
+                <p class="text-[11px] leading-relaxed text-muted-foreground mt-0.5">Instalação direta no espaço do usuário (%LocalAppData%), sem exigir privilégios de administrador.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Menu na bandeja (print real) -->
+      <section id="galeria" class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <i data-lucide="image" class="w-4 h-4 text-muted-foreground"></i>
+          Veja o menu na bandeja
+        </h2>
+        <figure class="space-y-3">
+          <img src="images/menu-bandeja.png" alt="Menu do UsbScreamer na bandeja do Windows, com as opções Testar Conectar, Testar Desconectar, Iniciar com o Windows, Abrir Pasta dos Sons, Site Oficial e Sair" width="405" height="232" loading="lazy" class="w-full max-w-sm mx-auto h-auto rounded-xl border border-border select-none" draggable="false" />
+          <figcaption class="text-[11px] text-muted-foreground leading-relaxed text-center">
+            Clique com o botão direito no ícone perto do relógio: teste os sons na hora, ative o início com o Windows e abra a pasta dos áudios. Clique na imagem para ampliar.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- Detalhes Técnicos -->
+      <section class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-3">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <i data-lucide="terminal" class="w-4 h-4 text-muted-foreground"></i>
+          Arquitetura Interna
+        </h2>
+        <p class="text-xs text-muted-foreground leading-relaxed">
+          Desenvolvido com Python 3 e API Win32 nativa, empacotado como binário direto para resposta imediata sem atraso de áudio.
+        </p>
+        <pre class="bg-background border border-border p-4 rounded-xl font-mono text-[11px] text-muted-foreground overflow-x-auto leading-relaxed"><code>UsbScreamer (Runtime)
+ ├─ Win32 Mutex (Instância Única Anti-Duplicação)
+ ├─ Polling Loop (GetLogicalDrives + DRIVE_REMOVABLE)
+ ├─ Audio Player (winsound WAV Assíncrono com Elif Priority)
+ ├─ System Tray Daemon (pystray + Menu de Teste/Pasta)
+ └─ Windows Registry (HKCU Run Persistence)</code></pre>
+      </section>
+
+      <!-- Como instalar / SmartScreen -->
+      <section id="instalar" class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <i data-lucide="download" class="w-4 h-4 text-muted-foreground"></i>
+          Como instalar (e a tela azul do SmartScreen)
+        </h2>
+
+        <ol class="space-y-3 text-xs text-muted-foreground leading-relaxed list-decimal list-inside marker:font-mono marker:text-foreground">
+          <li><strong class="text-foreground">Baixe e extraia o ZIP</strong> recebido após a compra e execute o <code class="text-foreground">UsbScreamer_Setup.exe</code>. Ele não pede senha de administrador: instala só para o seu usuário.</li>
+          <li><strong class="text-foreground">Se aparecer "O Windows protegeu o computador":</strong> o UsbScreamer é um projeto independente e ainda não tem certificado digital pago, por isso o Windows mostra "Editor desconhecido". Isso não indica um vírus, apenas que o app ainda não tem reputação junto à Microsoft. Clique em <strong class="text-foreground">Mais informações</strong> e depois em <strong class="text-foreground">Executar assim mesmo</strong>.</li>
+          <li><strong class="text-foreground">Siga o instalador</strong> normalmente. O ícone aparece na bandeja, perto do relógio.</li>
+        </ol>
+
+        <div class="grid gap-3 sm:grid-cols-3">
+          <figure class="space-y-2">
+            <img src="images/install-01.png" alt="Instalador do UsbScreamer mostrando a pasta de destino dentro de AppData\Local\Programs, sem pedir senha de administrador" width="830" height="625" loading="lazy" class="w-full h-auto rounded-xl border border-border select-none" draggable="false" />
+            <figcaption class="text-[11px] text-muted-foreground leading-relaxed">Instala na sua pasta de usuário, sem senha de administrador.</figcaption>
+          </figure>
+          <figure class="space-y-2">
+            <img src="images/install-02.png" alt="Instalador do UsbScreamer com a opção de criar um atalho na área de trabalho" width="812" height="618" loading="lazy" class="w-full h-auto rounded-xl border border-border select-none" draggable="false" />
+            <figcaption class="text-[11px] text-muted-foreground leading-relaxed">Atalho na área de trabalho é opcional.</figcaption>
+          </figure>
+          <figure class="space-y-2">
+            <img src="images/install-03.png" alt="Tela final do instalador do UsbScreamer com a opção de iniciar o aplicativo" width="815" height="623" loading="lazy" class="w-full h-auto rounded-xl border border-border select-none" draggable="false" />
+            <figcaption class="text-[11px] text-muted-foreground leading-relaxed">Ao concluir, o app já inicia na bandeja.</figcaption>
+          </figure>
+        </div>
+        <p class="text-[11px] text-muted-foreground/70 text-center">Clique nas imagens para ampliar.</p>
+
+        <div class="rounded-xl border border-border bg-background p-4 space-y-2">
+          <p class="text-xs font-semibold text-foreground flex items-center gap-2">
+            <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-muted-foreground"></i>
+            Quer conferir antes de instalar?
+          </p>
+          <p class="text-[11px] text-muted-foreground leading-relaxed">
+            SHA-256 do <code class="text-foreground">UsbScreamer_Setup.exe</code> (v1.0.0, o arquivo dentro do ZIP):
+          </p>
+          <pre class="font-mono text-[11px] text-foreground overflow-x-auto select-all"><code>32F96B293EDEA2C24A3419EE9AC037F7F6AD6C5FEE1C040F43E86CCC91D35171</code></pre>
+          <p class="text-[11px] text-muted-foreground leading-relaxed">
+            O código-fonte é aberto (MIT):
+            <a href="https://github.com/brenolab-py/UsbScreamer" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4 hover:text-foreground">github.com/brenolab-py/UsbScreamer</a>.
+          </p>
+          <p class="text-[11px] text-muted-foreground leading-relaxed">
+            No PowerShell, na pasta do arquivo:
+          </p>
+          <pre class="font-mono text-[11px] text-muted-foreground overflow-x-auto select-all"><code>Get-FileHash .\UsbScreamer_Setup.exe -Algorithm SHA256</code></pre>
+          <p class="text-[11px] text-muted-foreground leading-relaxed">
+            Os valores devem ser idênticos. Se não forem, não instale e fale comigo em
+            <a href="mailto:brenopd.lab@proton.me" class="underline underline-offset-4 hover:text-foreground">brenopd.lab@proton.me</a>.
+          </p>
+        </div>
+
+        <p class="text-[11px] text-muted-foreground leading-relaxed">
+          O programa não acessa a internet, não coleta dados e não deixa o pendrive "em uso" na hora de ejetar. Para desinstalar: <em>Configurações → Aplicativos</em>.
+        </p>
+      </section>
+
+      <!-- FAQ com Accordion Nativo -->
+      <section id="faq" class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+        <h2 class="text-sm font-semibold text-foreground flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-4 h-4 text-muted-foreground"></i>
+          Perguntas Frequentes
+        </h2>
+
+        <div class="space-y-2 text-xs">
+          
+          <details class="group border-b border-border/50 pb-2">
+            <summary class="flex justify-between items-center cursor-pointer py-1 font-medium text-foreground hover:text-muted-foreground transition-colors list-none">
+              <span>Posso trocar os sons padrão por outros áudios?</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-muted-foreground"></i>
+            </summary>
+            <p class="mt-2 text-muted-foreground leading-relaxed pl-1">
+              Sim! Basta clicar com o botão direito no ícone da bandeja, selecionar <strong>"Abrir Pasta dos Sons"</strong> e substituir os arquivos <code class="text-foreground">plug.wav</code> e <code class="text-foreground">unplug.wav</code> pelos seus próprios áudios. Você pode testá-los na hora pelo próprio menu.
+            </p>
+          </details>
+
+          <details class="group border-b border-border/50 pb-2">
+            <summary class="flex justify-between items-center cursor-pointer py-1 font-medium text-foreground hover:text-muted-foreground transition-colors list-none">
+              <span>Funciona com qualquer dispositivo USB conectado?</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-muted-foreground"></i>
+            </summary>
+            <p class="mt-2 text-muted-foreground leading-relaxed pl-1">
+              O UsbScreamer monitora especificamente <strong>pendrives e cartões de memória removíveis</strong> (<code class="text-foreground">DRIVE_REMOVABLE</code>). Ele não dispara com mouses, teclados ou fones de ouvido para não poluir sua experiência, e ignora HDs/SSDs externos reconhecidos pelo Windows como discos locais fixos. Alguns pendrives também podem ser classificados como discos fixos pelo Windows e não disparar o som; se isso acontecer, peça reembolso dentro da garantia. Leitores de cartão só são detectados quando o cartão é inserido em uma unidade que o Windows trate como removível.
+            </p>
+          </details>
+
+          <details class="group border-b border-border/50 pb-2">
+            <summary class="flex justify-between items-center cursor-pointer py-1 font-medium text-foreground hover:text-muted-foreground transition-colors list-none">
+              <span>O Windows SmartScreen pode exibir um aviso azul?</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-muted-foreground"></i>
+            </summary>
+            <p class="mt-2 text-muted-foreground leading-relaxed pl-1">
+              Sim. Por ser um programa independente e recente, sem certificado digital pago e sem reputação ainda junto à Microsoft, o Windows pode alertar sobre um "editor desconhecido". Basta clicar em <strong>"Mais informações"</strong> e depois em <strong>"Executar assim mesmo"</strong>. Você também pode conferir o SHA-256 do instalador na seção <a href="#instalar" class="underline underline-offset-4 hover:text-foreground">Como instalar</a>. O programa funciona 100% offline e não envia nenhum dado.
+            </p>
+          </details>
+
+          <details class="group border-b border-border/50 pb-2">
+            <summary class="flex justify-between items-center cursor-pointer py-1 font-medium text-foreground hover:text-muted-foreground transition-colors list-none">
+              <span>Como recebo o programa após a compra?</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-muted-foreground"></i>
+            </summary>
+            <p class="mt-2 text-muted-foreground leading-relaxed pl-1">
+              O instalador (<code class="text-foreground">UsbScreamer_Setup.exe</code> compactado em ZIP) é liberado imediatamente na tela de confirmação e enviado diretamente para o seu e-mail assim que o pagamento for aprovado na Kiwify.
+            </p>
+          </details>
+
+          <details class="group border-b border-border/50 pb-2">
+            <summary class="flex justify-between items-center cursor-pointer py-1 font-medium text-foreground hover:text-muted-foreground transition-colors list-none">
+              <span>E se não funcionar no meu computador?</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-muted-foreground"></i>
+            </summary>
+            <p class="mt-2 text-muted-foreground leading-relaxed pl-1">
+              Você tem <strong>7 dias de garantia</strong> com reembolso integral. Veja os detalhes na <a href="#reembolso" class="underline underline-offset-4 hover:text-foreground">política de reembolso</a>.
+            </p>
+          </details>
+
+          <details class="group">
+            <summary class="flex justify-between items-center cursor-pointer py-1 font-medium text-foreground hover:text-muted-foreground transition-colors list-none">
+              <span>Funciona em quais versões do Windows?</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform group-open:rotate-180 text-muted-foreground"></i>
+            </summary>
+            <p class="mt-2 text-muted-foreground leading-relaxed pl-1">
+              Feito para Windows 10 e Windows 11 (edições de 64-bit).
+            </p>
+          </details>
+
+        </div>
+      </section>
+
+      <!-- Política de Reembolso -->
+      <section id="reembolso" class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-3">
+        <h2 class="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 text-muted-foreground"></i>
+          Política de reembolso
+        </h2>
+        <div class="space-y-3 text-xs text-muted-foreground leading-relaxed">
+          <p><strong class="text-foreground">Garantia de 7 dias.</strong> Se o UsbScreamer não funcionar como você esperava, devolvemos o valor pago, em até 7 dias após a compra.</p>
+          <p><strong class="text-foreground">Como pedir:</strong> envie um e-mail para <a href="mailto:brenopd.lab@proton.me" class="underline underline-offset-4 hover:text-foreground">brenopd.lab@proton.me</a> com o e-mail usado na compra. Se algo não funcionou, conte o que aconteceu: ajuda a corrigir, mas não é obrigatório para o reembolso. Você também pode solicitar pela própria Kiwify.</p>
+          <p><strong class="text-foreground">Prazos:</strong> respondemos em até 2 dias úteis e o valor é devolvido pelo mesmo meio de pagamento após a aprovação, no prazo da Kiwify.</p>
+          <p><strong class="text-foreground">Antes de pedir reembolso:</strong> se tiver dificuldade com a instalação ou com o aviso do SmartScreen, escreva para o mesmo e-mail que ajudamos.</p>
+        </div>
+      </section>
+
+      <!-- Fechamento Inferior -->
+      <section class="flex flex-col items-center text-center space-y-4 pt-6">
+        <p class="font-mono text-xs text-muted-foreground">Menos de dez reais. Risadas garantidas toda vez que plugar e desplugar um pendrive.</p>
+        <a href="https://pay.kiwify.com.br/PhdYMki" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-medium text-sm px-6 h-11 rounded-full hover:bg-neutral-200 transition-all active:scale-[0.98]">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>Garantir UsbScreamer por R$ 9,99</span>
+        </a>
+      </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="border-t border-border/40 py-8 px-6 text-center text-[12px] font-mono text-muted-foreground space-y-2">
+      <p>built with 🔌 by <a href="https://github.com/brenolab-py" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4 hover:text-foreground">Breno Perez</a></p>
+      <p class="text-[10px] text-muted-foreground/60">
+        <a href="#instalar" class="hover:text-foreground">Como instalar</a> ·
+        <a href="#reembolso" class="hover:text-foreground">Reembolso</a> ·
+        <a href="https://github.com/brenolab-py/UsbScreamer" target="_blank" rel="noopener noreferrer" class="hover:text-foreground">Código-fonte (MIT)</a> ·
+        <a href="mailto:brenopd.lab@proton.me" class="hover:text-foreground">Contato</a>
+      </p>
+      <p class="text-[10px] text-muted-foreground/60">© 2026 UsbScreamer. Todos os direitos reservados.</p>
+    </footer>
+
+  </div>
+
+  <!-- Visualizador de imagens (lightbox) -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 p-4 cursor-pointer" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+    <button type="button" id="lightboxClose" class="absolute top-4 right-4 rounded-full bg-muted border border-border text-foreground px-3 py-1 font-mono text-xs hover:border-muted-foreground transition-all" aria-label="Fechar imagem">Fechar ✕</button>
+    <img id="lightboxImg" src="" alt="" class="max-h-full max-w-full h-auto w-auto rounded-xl border border-border shadow-2xl" />
+  </div>
+
+  <script>
+    // Inicializar ícones Lucide
+    if (window.lucide) lucide.createIcons();
+
+    // Player de Áudio Simples
+    const player = document.getElementById('audioPlayer');
+    function playSound(src) {
+      player.src = src;
+      player.play().catch(e => {
+        console.warn('Erro ao reproduzir áudio. Verifique se o arquivo existe no caminho:', src);
+      });
+    }
+
+    // Lightbox: clique numa imagem para ampliar; clique fora, botão ou Esc para fechar
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    function openLightbox(img) {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.classList.add('overflow-hidden');
+    }
+    function closeLightbox() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+      lightboxImg.src = '';
+    }
+
+    document.querySelectorAll('figure img').forEach(function (img) {
+      img.classList.add('cursor-pointer', 'hover:opacity-90', 'transition-opacity');
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.addEventListener('click', function () { openLightbox(img); });
+      img.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(img); }
+      });
+    });
+    lightbox.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+    });
+  </script>
+</body>
+</html>
